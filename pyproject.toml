@@ -1,0 +1,14 @@
+[project]
+name = "shiny-py-auth0"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "auth0-python>=4.9.0",
+    "jose>=1.0.0",
+    "python-jose>=3.4.0",
+    "pyyaml>=6.0.2",
+    "requests>=2.32.3",
+    "shiny>=1.4.0",
+]

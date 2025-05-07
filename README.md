@@ -15,16 +15,21 @@ This package is in early development and may contain bugs. If you find any, plea
 ## How it works
 
 - You create/configure your app in Auth0 and save the credentials in a `_auth0.yml` file or using environment variables.
-- Use the `AppAuth0()` wrapper to protect your app.
+- Use the `AppAuth0()` wrapper to protect your app. Importe diretamente de `shiny_auth0`:
 - The package handles login/logout, token validation, and provides user information in the session (`session.user`).
 
 ## Quick Example
 
-See complete examples in the `examples/` folder.
+Veja exemplos completos na pasta `examples/` e use sempre:
+
+```python
+from shiny_auth0 import AppAuth0, send_auth0_logout
+```
+
 
 ```python
 from shiny import render, reactive, ui
-from shiny_auth0.auth import AppAuth0, send_auth0_logout
+from shiny_auth0 import AppAuth0, send_auth0_logout
 
 app_ui = ui.page_fluid(
     ui.h2("Example: Login, Logout and Route Protection"),

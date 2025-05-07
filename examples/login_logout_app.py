@@ -1,6 +1,5 @@
 from shiny import ui, render, reactive
-from shiny_auth0.auth import AppAuth0, auth0_logout_js, send_auth0_logout
-from starlette.requests import Request
+from shiny_auth0 import AppAuth0, send_auth0_logout
 
 app_ui = ui.page_fluid(
     ui.h2("Exemplo: Login, Logout e Proteção de Rotas"),

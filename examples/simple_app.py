@@ -1,4 +1,4 @@
-from shiny_auth0.auth import AppAuth0
+from shiny_auth0 import AppAuth0
 from shiny import ui, render
 
 # UI protegida

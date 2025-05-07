@@ -119,9 +119,10 @@ def get_user_info(session: Session):
     """Retrieve authenticated user info from the session."""
     return session.user()
 
-def AppAuth0(app_ui, server, config_path=None):
+def AppAuth0(app_ui, server, config_path=None, static_assets=None, debug=False):
     """
     Função para criar App Shiny Python com Auth0, gerando state único e passando para UI e server.
+    Aceita os mesmos parâmetros que shiny.App para máxima compatibilidade.
     """
     import secrets
     from shiny import App
@@ -133,7 +134,9 @@ def AppAuth0(app_ui, server, config_path=None):
 
     return App(
         auth0_ui(app_ui_func, config_path=config_path, state=state),
-        auth0_server(server, config_path=config_path, state=state)
+        auth0_server(server, config_path=config_path, state=state),
+        static_assets=static_assets,
+        debug=debug
     )
 
 def auth0_logout_js():

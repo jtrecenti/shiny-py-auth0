@@ -11,44 +11,68 @@ pip install .
 ## Como funciona
 
 - Você cria/configura seu app no Auth0 e salva as credenciais em um arquivo `_auth0.yml` ou via variáveis de ambiente.
-- Use o wrapper `with_auth0()` para proteger seu app.
-- O pacote cuida do login/logout, validação do token e disponibiliza as informações do usuário na sessão.
+- Use o wrapper `AppAuth0()` para proteger seu app.
+- O pacote cuida do login/logout, validação do token e disponibiliza as informações do usuário na sessão (`session.user`).
 
 ## Exemplo rápido
 
 Veja exemplos completos em `examples/`.
 
 ```python
-from shiny import App, ui, render, output
-from shiny_auth0 import with_auth0
+from shiny import render, reactive, ui
+from shiny_auth0.auth import AppAuth0, send_auth0_logout
 
-app = App(
-    ui.page_fluid(
-        ui.h2("Exemplo protegido com Auth0!"),
-        ui.output_text("user_email")
-    ),
-    server=with_auth0(lambda input, output, session, user_info: (
-        @output()
-        @render.text
-        def user_email():
-            return user_info.get("email", "Desconhecido")
-    ))
+app_ui = ui.page_fluid(
+    ui.h2("Exemplo: Login, Logout e Proteção de Rotas"),
+    ui.output_text("user_email"),
+    ui.output_text("login_status"),
+    ui.input_action_button("logout", "Logout")
 )
+
+def server(input, output, session):
+    @render.text
+    def user_email():
+        user_info = session.user
+        if user_info:
+            return f"Email: {user_info.get('email', 'Desconhecido')}"
+        else:
+            return "Não autenticado."
+
+    @render.text
+    def login_status():
+        user_info = session.user
+        return "Logado!" if user_info else "Faça login para continuar."
+
+    @reactive.effect
+    @reactive.event(input.logout)
+    async def logout():
+        await send_auth0_logout(session)
+
+app = AppAuth0(app_ui, server)
 ```
 
-## Configuração (_auth0.yml)
+> **Nota:** O handler JavaScript para logout já é incluído automaticamente pelo `AppAuth0`.
+
+## Configuração (_auth0.yml ou .env)
+
+Crie um arquivo `examples/_auth0.yml`:
 
 ```yaml
-name: myApp
 auth0:
   domain: "YOUR_DOMAIN.auth0.com"
   client_id: "YOUR_CLIENT_ID"
   client_secret: "YOUR_CLIENT_SECRET"
-  redirect_uri: "http://localhost:8000/auth0/callback"
-  audience: "YOUR_API_IDENTIFIER"
+  redirect_uri: "http://localhost:8000"
+  audience: "YOUR_API_IDENTIFIER"  # (opcional)
 ```
 
-Ou use variáveis de ambiente equivalentes.
+Ou configure via variáveis de ambiente (veja `.env.example`).
+
+- `AUTH0_DOMAIN`
+- `AUTH0_CLIENT_ID`
+- `AUTH0_CLIENT_SECRET`
+- `AUTH0_REDIRECT_URI`
+- `AUTH0_AUDIENCE` (opcional)
 
 ---
 Inspirado em [curso-r/auth0](https://github.com/curso-r/auth0).

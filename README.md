@@ -5,7 +5,7 @@ Autenticação fácil para Shiny Python apps usando [Auth0](https://auth0.com/).
 ## Instalação
 
 ```bash
-pip install .
+pip install git+https://github.com/jtrecenti/shiny-py-auth0.git
 ```
 
 ## Como funciona

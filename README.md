@@ -1,29 +1,33 @@
 # shiny-auth0
 
-Autenticação fácil para Shiny Python apps usando [Auth0](https://auth0.com/).
+Easy authentication for Shiny Python apps using [Auth0](https://auth0.com/).
 
-## Instalação
+## Installation
 
 ```bash
 pip install git+https://github.com/jtrecenti/shiny-py-auth0.git
 ```
 
-## Como funciona
+## Development Status
 
-- Você cria/configura seu app no Auth0 e salva as credenciais em um arquivo `_auth0.yml` ou via variáveis de ambiente.
-- Use o wrapper `AppAuth0()` para proteger seu app.
-- O pacote cuida do login/logout, validação do token e disponibiliza as informações do usuário na sessão (`session.user`).
+This package is in early development and may contain bugs. If you find any, please open an issue on the [repository](https://github.com/jtrecenti/shiny-py-auth0).
 
-## Exemplo rápido
+## How it works
 
-Veja exemplos completos em `examples/`.
+- You create/configure your app in Auth0 and save the credentials in a `_auth0.yml` file or using environment variables.
+- Use the `AppAuth0()` wrapper to protect your app.
+- The package handles login/logout, token validation, and provides user information in the session (`session.user`).
+
+## Quick Example
+
+See complete examples in the `examples/` folder.
 
 ```python
 from shiny import render, reactive, ui
 from shiny_auth0.auth import AppAuth0, send_auth0_logout
 
 app_ui = ui.page_fluid(
-    ui.h2("Exemplo: Login, Logout e Proteção de Rotas"),
+    ui.h2("Example: Login, Logout and Route Protection"),
     ui.output_text("user_email"),
     ui.output_text("login_status"),
     ui.input_action_button("logout", "Logout")
@@ -34,14 +38,14 @@ def server(input, output, session):
     def user_email():
         user_info = session.user
         if user_info:
-            return f"Email: {user_info.get('email', 'Desconhecido')}"
+            return f"Email: {user_info.get('email', 'Unknown')}"
         else:
-            return "Não autenticado."
+            return "Not authenticated."
 
     @render.text
     def login_status():
         user_info = session.user
-        return "Logado!" if user_info else "Faça login para continuar."
+        return "Logged in!" if user_info else "Please log in to continue."
 
     @reactive.effect
     @reactive.event(input.logout)
@@ -51,11 +55,11 @@ def server(input, output, session):
 app = AppAuth0(app_ui, server)
 ```
 
-> **Nota:** O handler JavaScript para logout já é incluído automaticamente pelo `AppAuth0`.
+> **Note:** The JavaScript handler for logout is included automatically by `AppAuth0`.
 
-## Configuração (_auth0.yml ou .env)
+## Configuration (`_auth0.yml` or `.env`)
 
-Crie um arquivo `examples/_auth0.yml`:
+Create a file `examples/_auth0.yml`:
 
 ```yaml
 auth0:
@@ -63,16 +67,16 @@ auth0:
   client_id: "YOUR_CLIENT_ID"
   client_secret: "YOUR_CLIENT_SECRET"
   redirect_uri: "http://localhost:8000"
-  audience: "YOUR_API_IDENTIFIER"  # (opcional)
+  audience: "YOUR_API_IDENTIFIER"  # (optional)
 ```
 
-Ou configure via variáveis de ambiente (veja `.env.example`).
+Or configure via environment variables (see `.env.example`):
 
 - `AUTH0_DOMAIN`
 - `AUTH0_CLIENT_ID`
 - `AUTH0_CLIENT_SECRET`
 - `AUTH0_REDIRECT_URI`
-- `AUTH0_AUDIENCE` (opcional)
+- `AUTH0_AUDIENCE` (optional)
 
 ---
-Inspirado em [curso-r/auth0](https://github.com/curso-r/auth0).
+Inspired by [curso-r/auth0](https://github.com/curso-r/auth0).

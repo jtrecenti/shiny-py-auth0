@@ -45,6 +45,7 @@ def auth0_ui(app_ui_func=None, config_path=None, state=None):
                 # Apenas renderiza a UI normalmente, sem tentar autenticar ou acessar session
                 return func(request, *args, **kwargs)
             # Se não autenticado nem com code, redireciona para Auth0 login
+            # TODO: é necessário ter isso?
             if state is None:
                 import secrets
                 state_val = secrets.token_urlsafe(16)
